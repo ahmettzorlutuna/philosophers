@@ -28,11 +28,15 @@ int	error_message(const char *str, int signal)
 	return (signal);
 }
 
-t_time get_current_time(void)
+t_time	get_current_time(void)
 {
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    return (t_time)(tv.tv_sec * 1000ULL + tv.tv_usec / 1000ULL);
+	t_time			time;
+	struct timeval	tv;
+
+	if (gettimeofday(&tv, NULL) == -1)
+		error_message("Time error\n", ERR_TIME);
+	time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
+	return (time);
 }
 
 void	print_state(t_philo *philo, char *msg)
