@@ -22,8 +22,11 @@ static	int	is_philo_dead(t_philo *philo, int i)
 	{
 		pthread_mutex_lock(philo[i].mutexes.death_mutex);
 		*philo[i].mutexes.life_state = 0;
+		pthread_mutex_lock(philo[i].mutexes.print_mutex);
+		printf("%llu %d died\n", (get_current_time()
+				- philo[i].born_time), i + 1);
+		pthread_mutex_unlock(philo[i].mutexes.print_mutex);
 		pthread_mutex_unlock(philo[i].mutexes.death_mutex);
-		print_state(&philo[i], " died");
 		pthread_mutex_unlock(philo[i].mutexes.meals_mutex);
 		return (1);
 	}
@@ -56,7 +59,7 @@ void	*monitor_routine(void *arg)
 		i = 0;
 		total_meals_eaten = 0;
 		while (i < philo->philosophers_count)
-		{
+		{	
 			if (is_philo_dead(philo, i))
 				return (NULL);
 			pthread_mutex_lock(philo[i].mutexes.meals_mutex);
